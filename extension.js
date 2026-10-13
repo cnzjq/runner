@@ -11,7 +11,7 @@ let currentProcess = null;
 // 获取或创建输出通道
 function getOutputChannel() {
     if (!outputChannel) {
-        outputChannel = vscode.window.createOutputChannel('Code Runner Native');
+        outputChannel = vscode.window.createOutputChannel('Code Runner');
     }
     return outputChannel;
 }
@@ -376,7 +376,7 @@ function buildRunAfterCompileCommand(languageInfo) {
 // 运行代码核心逻辑
 async function runCode(code, languageInfo, isFile = true) {
     const channel = getOutputChannel();
-    const config = vscode.workspace.getConfiguration('codeRunnerNative');
+    const config = vscode.workspace.getConfiguration('runner');
     const showExecutionTime = config.get('showExecutionTime', true);
     const clearPreviousOutput = config.get('clearPreviousOutput', true);
     const runInTerminalOption = config.get('runInTerminal', false);
@@ -534,10 +534,10 @@ async function runCode(code, languageInfo, isFile = true) {
 
 // 激活插件
 function activate(context) {
-    console.log('Code Runner Native 插件已激活');
+    console.log('Code Runner 插件已激活');
     
     // 注册：运行当前文件命令
-    const runFileDisposable = vscode.commands.registerCommand('codeRunnerNative.runCurrentFile', async () => {
+    const runFileDisposable = vscode.commands.registerCommand('runner.runCurrentFile', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showWarningMessage('请先打开一个文件');
@@ -562,7 +562,7 @@ function activate(context) {
     });
     
     // 注册：运行选中代码命令
-    const runSelectedDisposable = vscode.commands.registerCommand('codeRunnerNative.runSelectedCode', async () => {
+    const runSelectedDisposable = vscode.commands.registerCommand('runner.runSelectedCode', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showWarningMessage('请先打开一个文件');
@@ -603,13 +603,13 @@ function activate(context) {
     });
     
     // 注册：停止运行命令
-    const stopDisposable = vscode.commands.registerCommand('codeRunnerNative.stopRunningCode', () => {
+    const stopDisposable = vscode.commands.registerCommand('runner.stopRunningCode', () => {
         stopRunningCode();
     });
     
     // 注册：状态栏项
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-    statusBarItem.command = 'codeRunnerNative.runCurrentFile';
+    statusBarItem.command = 'runner.runCurrentFile';
     statusBarItem.text = '$(play) Run';
     statusBarItem.tooltip = '运行当前文件 (Ctrl+Alt+N)';
     statusBarItem.show();
@@ -657,7 +657,7 @@ function deactivate() {
         currentProcess = null;
     }
     disposeOutputChannel();
-    console.log('Code Runner Native 插件已停用');
+    console.log('Code Runner 插件已停用');
 }
 
 module.exports = {
